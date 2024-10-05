@@ -54,7 +54,7 @@ class AuthController extends Controller
 
     public function checkusercart()
     {
-        $usercart = "empty";
+        $usercart = "not empty";
         return $usercart;
     }
 }
