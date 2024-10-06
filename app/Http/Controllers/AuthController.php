@@ -14,6 +14,13 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         // Validate the incoming request
+        $rules = [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -39,6 +46,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // Validate the incoming request
+        $rules = [
+            'email' => 'required|email',
+            'password' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -57,4 +70,10 @@ class AuthController extends Controller
         $usercart = "not empty";
         return $usercart;
     }
+
+    public function demo()
+    {
+        return "demo passed";
+    }
+}
 }
