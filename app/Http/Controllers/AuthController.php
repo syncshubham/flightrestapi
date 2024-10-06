@@ -83,8 +83,15 @@ class AuthController extends Controller
     }
 
 
-    public function demo()
+    public function logout(Request $request)
     {
-        return "demo passed";
+        $user = $request->user();
+        $user->tokens()->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User Logged Out Successfully',
+            'user' => $user,
+        ], 200);
     }
 }
