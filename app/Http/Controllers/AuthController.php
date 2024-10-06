@@ -19,7 +19,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
         ];
-        
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -52,7 +52,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ];
-        
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -92,5 +92,10 @@ class AuthController extends Controller
             'message' => 'User Logged Out Successfully',
             'user' => $user,
         ], 200);
+    }
+
+    public function demo()
+    {
+        return "demo passed";
     }
 }
