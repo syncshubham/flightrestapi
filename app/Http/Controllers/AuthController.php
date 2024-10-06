@@ -14,19 +14,14 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         // Validate the incoming request
-        $rules = [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-        ];
-        
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors(),
-            ], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // Create the user
@@ -37,60 +32,29 @@ class AuthController extends Controller
         ]);
 
         // Optionally, return the created user data
-        return response()->json([
-            'status' => true,
-            'message' => 'User Registered Successfully',
-            'user' => $user,
-        ], 201);
+        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
     // User login
     public function login(Request $request)
     {
         // Validate the incoming request
-        $rules = [
-            'email' => 'required|email',
-            'password' => 'required',
-        ];
-        
-        $validator = Validator::make($request->all(), $rules);
+        $credentials = $request->only('email', 'password');
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Invalid Credentials!',
-                'errors' => $validator->errors()->all(),
-            ], 401);
-        }
-
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt($credentials)) {
             // Authentication passed
             $user = Auth::user();
-            $token = $user->createToken('auth_token')->accessToken; // If using Passport
+            $token = $user->createToken('MyApp')->accessToken; // If using Passport
 
-            return response()->json([
-                'status' => true,
-                'message' => 'User Logged In Successfully',
-                'user' => $user,
-                'token' => $token,
-            ], 201);
+            return response()->json(['message' => 'Login successful', 'user' => $user, 'token' => $token], 200);
         }
 
-        return response()->json([
-            'status' => false,
-            'message' => 'Invalid Credentials!'
-        ], 401);
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
-    public function logout(Request $request)
+    public function checkusercart()
     {
-        $user = $request->user();
-        $user->tokens()->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User Logged Out Successfully',
-            'user' => $user,
-        ], 200);
+        $usercart = "not empty";
+        return $usercart;
     }
 }
